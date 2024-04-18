@@ -1,46 +1,39 @@
 import { Button, Checkbox, Divider, Form, Input, Typography, message, notification } from 'antd';
-import "./login.scss"
+import "./register.scss"
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { callLogin } from '../../services/api';
+import { callRegister } from '../../services/api';
 import useMessage from 'antd/es/message/useMessage';
-import { useDispatch } from 'react-redux';
-import { doLoginAction } from '../../redux/account/accountSlice';
 
-const Login = () => {
+const Register = () => {
 
     const [isSubmit, setIsSubmit] = useState(false);
     const navigate = useNavigate();
-    const dispatch = useDispatch();
 
 
     const onFinish = async (values) => {
-        const { username, password } = values;
+        const { fullName, email, password, phone } = values;
         setIsSubmit(true);
-        const res = await callLogin(username, password, 3000);
+        let res = await callRegister(fullName, email, password, phone);
         setIsSubmit(false);
-        if (res?.data?.access_token) {
-            localStorage.setItem('access_token', res.data.access_token)
-            dispatch(doLoginAction(res.data.user));
-            message.success('Đăng nhập thành công');
-            navigate('/')
-        }
-        else {
+        if (res?.data?._id) {
+            message.success('Tạo mới người dùng thành công !');
+            navigate('/login')
+        } else
             notification.error({
-                message: 'Đã có lỗi xảy ra',
-                description: res?.message,
+                message: "Đã có lỗi xảy ra",
+                description: res.message ?? Array.isArray(res.message) ? res.message[0] : res.message,
                 duration: 5
             })
-        }
 
-        console.log('check res', res)
+        console.log('check res:', res);
     };
 
 
     return (
-        <div className='login-page' >
+        <div className='register-page' >
             <Form
-                className='login-form'
+                className='register-form'
                 name="basic"
                 labelCol={{
                     span: 6,
@@ -48,12 +41,25 @@ const Login = () => {
                 onFinish={onFinish}
                 autoComplete="off"
             >
-                <Typography.Title style={{ textAlign: "center" }}>Đăng nhập</Typography.Title>
+                <Typography.Title>Đăng ký tài khoản</Typography.Title>
                 <Divider />
+                <Form.Item
+                    label="Full Name"
+                    name="fullName"
+                    labelCol={{ span: 24 }}
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Không được để trống họ tên',
+                        },
+                    ]}
+                >
+                    <Input />
+                </Form.Item>
 
                 <Form.Item
                     label="Email"
-                    name="username"
+                    name="email"
                     labelCol={{ span: 24 }}
                     rules={[
                         {
@@ -80,22 +86,36 @@ const Login = () => {
                 </Form.Item>
 
                 <Form.Item
+                    label="Phone"
+                    name="phone"
+                    labelCol={{ span: 24 }}
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Không được để trống số điện thoại',
+                        },
+                    ]}
+                >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item
                 // wrapperCol={{
                 //     offset: 6,
                 //     span: 16,
                 // }}
                 >
                     <Button type="primary" htmlType="submit" loading={isSubmit}>
-                        Đăng nhập
+                        Đăng ký
                     </Button>
                 </Form.Item>
                 <Divider>Or</Divider>
                 <Form.Item>
-                    <h3>Chưa có tài khoản ? <span><Link to="/register"> Đăng ký</Link></span></h3>
+                    <h3>Đã có tài khoản ? <span><Link to="/login"> Đăng nhập</Link></span></h3>
                 </Form.Item>
             </Form>
         </div>
     )
 }
 
-export default Login
+export default Register
