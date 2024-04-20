@@ -1,10 +1,10 @@
-
+import './footer.scss'
 
 const Footer = () => {
     return (
-        <>
-            Footer
-        </>
+        <footer>
+            Project bán sách by React
+        </footer>
     )
 }
 

@@ -19,6 +19,7 @@ import Loading from './components/Loading/index.jsx';
 import NotFound from './components/NotFound/index.jsx';
 import AdminPage from './components/Admin/index.jsx';
 import ProtectedRoute from './components/ProtectedRoute/index.jsx';
+import LayoutAdmin from './components/Admin/LayoutAdmin.jsx';
 
 const Layout = () => {
   return (
@@ -30,13 +31,17 @@ const Layout = () => {
   )
 }
 
+
 export default function App() {
 
   const dispatch = useDispatch();
   const isAuthenticated = useSelector(state => state.account.isAuthenticated);
 
   const getAccount = async () => {
-    if (window.location.pathname === '/login') return;
+    if (window.location.pathname === '/login'
+      || window.location.pathname === '/register'
+      // || window.location.pathname === '/'
+    ) return;
     const res = await callFetchAccount();
     if (res && res.data) {
       dispatch(doGetAccountAction(res.data));
@@ -76,7 +81,7 @@ export default function App() {
 
     {
       path: "/admin",
-      element: <Layout />,
+      element: <LayoutAdmin />,
       errorElement: <NotFound />,
       children: [
         {
@@ -99,7 +104,7 @@ export default function App() {
   ]);
   return (
     <>
-      {isAuthenticated === true || window.location.pathname === '/login' || window.location.pathname === '/admin' ?
+      {isAuthenticated === true || window.location.pathname === '/login' || window.location.pathname === '/register' || window.location.pathname === '/' ?
         <RouterProvider router={router} />
         :
         <Loading />
