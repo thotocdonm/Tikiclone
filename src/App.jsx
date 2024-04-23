@@ -17,9 +17,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { doGetAccountAction } from './redux/account/accountSlice';
 import Loading from './components/Loading/index.jsx';
 import NotFound from './components/NotFound/index.jsx';
-import AdminPage from './components/Admin/index.jsx';
+import AdminPage from './pages/admin/index.jsx';
 import ProtectedRoute from './components/ProtectedRoute/index.jsx';
 import LayoutAdmin from './components/Admin/LayoutAdmin.jsx';
+import OrderPage from './pages/order/index.jsx';
 
 const Layout = () => {
   return (
@@ -36,6 +37,7 @@ export default function App() {
 
   const dispatch = useDispatch();
   const isAuthenticated = useSelector(state => state.account.isAuthenticated);
+  const isLoading = useSelector(state => state.account.isLoading);
 
   const getAccount = async () => {
     if (window.location.pathname === '/login'
@@ -92,11 +94,24 @@ export default function App() {
         },
         {
           path: "user",
-          element: <ContactPage />,
+          element:
+            <ProtectedRoute>
+              <ContactPage />
+            </ProtectedRoute>,
         },
         {
           path: "book",
-          element: <BookPage />,
+          element: <ProtectedRoute>
+            <BookPage />
+          </ProtectedRoute>
+          ,
+        },
+        {
+          path: "order",
+          element: <ProtectedRoute>
+            <OrderPage />
+          </ProtectedRoute>
+          ,
         },
       ],
     },
@@ -104,7 +119,7 @@ export default function App() {
   ]);
   return (
     <>
-      {isAuthenticated === true || window.location.pathname === '/login' || window.location.pathname === '/register' || window.location.pathname === '/' ?
+      {isLoading === false || window.location.pathname === '/login' || window.location.pathname === '/register' || window.location.pathname === '/' ?
         <RouterProvider router={router} />
         :
         <Loading />

@@ -129,7 +129,7 @@ const LayoutAdmin = () => {
                     <Content>
                         <Outlet />
                     </Content>
-                    <Footer style={{ padding: 0 }}>
+                    <Footer style={{ padding: 0, maxWidth: '1703px' }}>
                         React Test Fresher &copy; Hỏi Dân IT - Made with <HeartTwoTone />
                     </Footer>
                 </Layout>

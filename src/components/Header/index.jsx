@@ -101,8 +101,8 @@ const Header = () => {
                 onClose={onClose}
                 open={open}
             >
-                <span>Quản lý tài khoản</span>
-                <span onClick={() => handleLogout()}>Đăng xuất</span>
+                <p>Quản lý tài khoản</p>
+                <p onClick={() => handleLogout()}>Đăng xuất</p>
             </Drawer>
         </>
     )
