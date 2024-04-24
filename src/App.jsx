@@ -21,6 +21,8 @@ import AdminPage from './pages/admin/index.jsx';
 import ProtectedRoute from './components/ProtectedRoute/index.jsx';
 import LayoutAdmin from './components/Admin/LayoutAdmin.jsx';
 import OrderPage from './pages/order/index.jsx';
+import TableUser from './components/Admin/User/TableUser.jsx';
+import InputSearch from './components/Admin/User/InputSearch.jsx';
 
 const Layout = () => {
   return (
@@ -96,7 +98,7 @@ export default function App() {
           path: "user",
           element:
             <ProtectedRoute>
-              <ContactPage />
+              <TableUser />
             </ProtectedRoute>,
         },
         {
