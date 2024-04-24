@@ -43,9 +43,11 @@ const TableUser = () => {
     const [pageSize, setPageSize] = useState(2);
     const [total, setTotal] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
+    const [searchFilter, setSearchFilter] = useState();
+    const [sortFilter, setSortFilter] = useState();
 
     const onChange = async (pagination, filters, sorter, extra) => {
-        console.log('params', pagination, filters, sorter, extra);
+        console.log('check sorter', sorter);
         if (pagination && pagination.current !== current) {
             setCurrent(pagination.current);
         }
@@ -53,29 +55,36 @@ const TableUser = () => {
             setPageSize(pagination.pageSize);
             setCurrent(1);
         }
+        if (sorter) {
+            let sortQuery = sorter.order === 'ascend' ? `sort=${sorter.field}` : `sort=-${sorter.field}`;
+            setSortFilter(sortQuery);
+        }
     };
 
-    const fetchUserWithPaginate = async (searchFilter) => {
+    const fetchUserWithPaginate = async () => {
         setIsLoading(true);
         let query = `current=${current}&pageSize=${pageSize}`;
         if (searchFilter) {
             query += `&${searchFilter}`;
+        }
+        if (sortFilter) {
+            query += `&${sortFilter}`;
         }
         const res = await getUserWithPaginate(query);
         if (res && res.data) {
             setData(res.data.result);
             setTotal(res.data.meta.total);
         }
-        console.log(data);
         setIsLoading(false);
     };
 
     const handleSearch = (query) => {
-        fetchUserWithPaginate(query)
+        setSearchFilter(query)
+        fetchUserWithPaginate()
     }
     useEffect(() => {
         fetchUserWithPaginate();
-    }, [current, pageSize])
+    }, [current, pageSize, searchFilter, sortFilter])
     return (
         <div>
             <InputSearch handleSearch={handleSearch} />
