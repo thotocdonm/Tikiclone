@@ -20,3 +20,7 @@ export const callLogout = () => {
 export const getUserWithPaginate = (query) => {
     return axios.get(`/api/v1/user?${query}`)
 }
+
+export const postCreateUser = (fullName, password, email, phone) => {
+    return axios.post('http://localhost:8080/api/v1/user', { fullName, password, email, phone })
+}

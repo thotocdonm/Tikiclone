@@ -78,6 +78,10 @@ const LayoutAdmin = () => {
             key: 'account',
         },
         {
+            label: <label style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>Trang chủ</label>,
+            key: 'home',
+        },
+        {
             label: <label
                 style={{ cursor: 'pointer' }}
                 onClick={() => handleLogout()}
@@ -120,7 +124,10 @@ const LayoutAdmin = () => {
                         <Dropdown menu={{ items: itemsDropdown }} trigger={['click']}>
                             <a onClick={(e) => e.preventDefault()}>
                                 <Space>
-                                    Welcome {user?.fullName}
+                                    <div className="header-right">
+                                        <img src={`http://localhost:8080/images/avatar/${user.avatar}`} width={'30px'} height={'30px'}></img>
+                                        {user.fullName}
+                                    </div>
                                     <DownOutlined />
                                 </Space>
                             </a>

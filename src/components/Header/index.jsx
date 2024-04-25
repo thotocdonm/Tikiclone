@@ -14,7 +14,7 @@ const Header = () => {
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const items = [
+    let items = [
         {
             label: <label style={{ cursor: 'pointer' }}>Quản lý tài khoản</label>,
             key: 'account',
@@ -34,7 +34,14 @@ const Header = () => {
     };
 
     const isAuthenticated = useSelector(state => state.account.isAuthenticated)
-    const user = useSelector(state => state.account.user)
+    const user = useSelector(state => state.account.user);
+
+    if (user?.role === 'ADMIN') {
+        items.unshift({
+            label: <label style={{ cursor: 'pointer' }} onClick={() => navigate('/admin')}>Trang quản trị</label>,
+            key: 'admin',
+        })
+    }
 
     const handleLogout = async () => {
         let res = await callLogout();
@@ -85,7 +92,10 @@ const Header = () => {
                     >
                         <a onClick={(e) => e.preventDefault()}>
                             <Space size={10}>
-                                <span>Welcome {user.fullName}</span>
+                                <div className="header-right">
+                                    <img src={`http://localhost:8080/images/avatar/${user.avatar}`} width={'30px'} height={'30px'}></img>
+                                    {user.fullName}
+                                </div>
                                 <DownOutlined />
                             </Space>
                         </a>

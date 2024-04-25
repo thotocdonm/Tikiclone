@@ -27,6 +27,12 @@
             display: inline-block;
         }
     }
+    .header-right{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+    }
 
 
     @keyframes spin-animation {
