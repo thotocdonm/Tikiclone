@@ -22,5 +22,17 @@ export const getUserWithPaginate = (query) => {
 }
 
 export const postCreateUser = (fullName, password, email, phone) => {
-    return axios.post('http://localhost:8080/api/v1/user', { fullName, password, email, phone })
+    return axios.post('/api/v1/user', { fullName, password, email, phone })
+}
+
+export const postCreateListUser = (array) => {
+    return axios.post('/api/v1/user/bulk-create', array)
+}
+
+export const putUpdateUser = (_id, fullName, phone) => {
+    return axios.put('/api/v1/user', { _id, fullName, phone })
+}
+
+export const delDeleteUser = (id) => {
+    return axios.delete(`/api/v1/user/${id}`);
 }

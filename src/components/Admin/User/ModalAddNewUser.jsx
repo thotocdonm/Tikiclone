@@ -15,6 +15,7 @@ const ModalAddNewUser = (props) => {
     };
     const handleCancel = () => {
         setIsAddModalOpen(false);
+        form.resetFields();
     };
     const onFinish = async (values) => {
         setIsSubmit(true);

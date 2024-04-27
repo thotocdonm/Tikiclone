@@ -1,5 +1,5 @@
-import { Badge, Button, Descriptions, Drawer, Table } from "antd";
-import { getUserWithPaginate } from "../../../services/api";
+import { Badge, Button, Descriptions, Drawer, Popconfirm, Popover, Table, message, notification } from "antd";
+import { delDeleteUser, getUserWithPaginate } from "../../../services/api";
 import { useEffect, useState } from "react";
 import InputSearch from "./InputSearch";
 import { MdDeleteOutline } from "react-icons/md";
@@ -8,10 +8,18 @@ import { CiExport } from "react-icons/ci";
 import { CiImport } from "react-icons/ci";
 import { IoMdAdd } from "react-icons/io";
 import { IoMdRefresh } from "react-icons/io";
-import { ExportOutlined, FileAddOutlined, ImportOutlined, PlusOutlined, SyncOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, ExportOutlined, FileAddOutlined, ImportOutlined, PlusOutlined, SyncOutlined } from "@ant-design/icons";
 import ModalAddNewUser from "./ModalAddNewUser";
+import ModalImportUser from "./ModalImportUser";
+import * as XLSX from 'xlsx/xlsx.mjs';
+import ModalUpdateUser from "./ModalUpdateUser";
 
 const TableUser = () => {
+    const content = (
+        <div>
+            <p>Bạn có chắc chắn muốn xóa user này ?</p>
+        </div>
+    );
     const columns = [
         {
             title: 'Id',
@@ -44,9 +52,26 @@ const TableUser = () => {
         },
         {
             title: 'Action',
-            render: () => {
+            render: (record) => {
                 return <>
-                    <MdDeleteOutline size={20} style={{ color: 'red' }} />
+                    <Popconfirm
+                        title="Xác nhận xóa User"
+                        description="Bạn có chắc chắn muốn xóa user này ?"
+                        okText="Xác nhận"
+                        cancelText="Hủy"
+                        placement="left"
+                        onConfirm={() => handleDeleteUser(record._id)}
+                    >
+                        <DeleteOutlined style={{ color: 'red', cursor: 'pointer', fontSize: '20px' }} />
+                    </Popconfirm>
+                    <EditOutlined
+                        style={{ color: 'orange', cursor: 'pointer', fontSize: '20px', paddingLeft: '20px' }}
+                        onClick={() => {
+                            setIsUpdateModalOpen(true)
+                            setDataUpdate(record);
+                        }}
+                    />
+
                 </>
             }
 
@@ -54,7 +79,7 @@ const TableUser = () => {
     ];
 
 
-    const [data, setData] = useState([]);
+    const [listUser, setListUser] = useState([]);
     const [current, setCurrent] = useState(1);
     const [pageSize, setPageSize] = useState(5);
     const [total, setTotal] = useState(0);
@@ -64,6 +89,9 @@ const TableUser = () => {
     const [open, setOpen] = useState(false);
     const [detailData, setDetailData] = useState({});
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+    const [dataUpdate, setDataUpdate] = useState();
 
 
     const showDrawer = () => {
@@ -99,7 +127,7 @@ const TableUser = () => {
         }
         const res = await getUserWithPaginate(query);
         if (res && res.data) {
-            setData(res.data.result);
+            setListUser(res.data.result);
             setTotal(res.data.meta.total);
         }
         setIsLoading(false);
@@ -115,8 +143,8 @@ const TableUser = () => {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span>Table List Users</span>
                 <span style={{ display: 'flex', gap: 15 }}>
-                    <Button icon={<ExportOutlined />} type="primary">Export</Button>
-                    <Button icon={<ImportOutlined />} type="primary">Import</Button>
+                    <Button icon={<ExportOutlined />} type="primary" onClick={() => downloadExcel(listUser)}>Export</Button>
+                    <Button icon={<ImportOutlined />} type="primary" onClick={() => setIsImportModalOpen(true)}>Import</Button>
                     <Button icon={<PlusOutlined />} type="primary" onClick={() => setIsAddModalOpen(true)}>Thêm mới</Button>
                     <Button icon={<SyncOutlined />} type="ghost" onClick={() => {
                         setSortFilter('');
@@ -129,13 +157,37 @@ const TableUser = () => {
     useEffect(() => {
         fetchUserWithPaginate();
     }, [current, pageSize, searchFilter, sortFilter])
+
+    const downloadExcel = (data) => {
+        const worksheet = XLSX.utils.json_to_sheet(data);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+        //let buffer = XLSX.write(workbook, { bookType: "xlsx", type: "buffer" });
+        //XLSX.write(workbook, { bookType: "xlsx", type: "binary" });
+        XLSX.writeFile(workbook, "ExportUser.csv");
+    };
+
+    const handleDeleteUser = async (id) => {
+        let res = await delDeleteUser(id);
+        if (res && res.data) {
+            message.success('Xóa user thành công');
+            fetchUserWithPaginate();
+        }
+        else {
+            notification.error({
+                message: 'Đã có lỗi xảy ra',
+                description: res?.message,
+                duration: 5
+            })
+        }
+    }
     return (
         <div>
             <InputSearch handleSearch={handleSearch} />
             <Table
                 title={renderHeader}
                 columns={columns}
-                dataSource={data}
+                dataSource={listUser}
                 onChange={onChange}
                 style={{ padding: '0 15px' }}
                 rowKey='_id'
@@ -160,6 +212,19 @@ const TableUser = () => {
                 setIsAddModalOpen={setIsAddModalOpen}
                 fetchUserWithPaginate={fetchUserWithPaginate}
             />
+            <ModalImportUser
+                isImportModalOpen={isImportModalOpen}
+                setIsImportModalOpen={setIsImportModalOpen}
+                fetchUserWithPaginate={fetchUserWithPaginate}
+            />
+            <ModalUpdateUser
+                isUpdateModalOpen={isUpdateModalOpen}
+                setIsUpdateModalOpen={setIsUpdateModalOpen}
+                fetchUserWithPaginate={fetchUserWithPaginate}
+                dataUpdate={dataUpdate}
+                setDataUpdate={setDataUpdate}
+            />
+
 
         </div>
     )
