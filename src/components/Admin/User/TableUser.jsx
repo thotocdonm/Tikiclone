@@ -110,7 +110,7 @@ const TableUser = () => {
             setPageSize(pagination.pageSize);
             setCurrent(1);
         }
-        if (sorter) {
+        if (Object.keys(sorter).length !== 0) {
             let sortQuery = sorter.order === 'ascend' ? `sort=${sorter.field}` : `sort=-${sorter.field}`;
             setSortFilter(sortQuery);
         }

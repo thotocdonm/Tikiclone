@@ -36,3 +36,11 @@ export const putUpdateUser = (_id, fullName, phone) => {
 export const delDeleteUser = (id) => {
     return axios.delete(`/api/v1/user/${id}`);
 }
+
+export const getBookWithPaginate = (query) => {
+    return axios.get(`/api/v1/book?${query}`)
+}
+
+export const getBookCategory = () => {
+    return axios.get(`/api/v1/database/category`)
+}
