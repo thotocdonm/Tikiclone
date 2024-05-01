@@ -57,6 +57,8 @@ const DetailBook = (props) => {
                 <DescriptionsItem label="Tên sách" span={1}>{detailData.mainText}</DescriptionsItem>
                 <DescriptionsItem label="Tác giả" span={1}>{detailData.author}</DescriptionsItem>
                 <DescriptionsItem label="Giá tiền" span={1}>{`${detailData.price} đ`}</DescriptionsItem>
+                <DescriptionsItem label="Số lượng" span={1}>{detailData.quantity}</DescriptionsItem>
+                <DescriptionsItem label="Đã bán" span={1}>{detailData.sold}</DescriptionsItem>
                 <DescriptionsItem label="Thể loại" span={2}>{detailData.category}</DescriptionsItem>
                 <DescriptionsItem label="Created At" span={1}>{moment(detailData.createdAt).format("DD-MM-YYYY hh:mm:ss")}</DescriptionsItem>
                 <DescriptionsItem label="Updated At" span={1}>{moment(detailData.updatedAt).format("DD-MM-YYYY hh:mm:ss")}</DescriptionsItem>

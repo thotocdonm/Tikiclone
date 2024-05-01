@@ -40,7 +40,7 @@ const InputSearchBook = (props) => {
                     <Input value={author} onChange={(e) => setAuthor(e.target.value)} ></Input>
                 </div>
                 <div className="search-input">
-                    <Title level={5}>Thể loại</Title>
+                    <Title level={5}>Thể loại       </Title>
                     <Input value={category} onChange={(e) => setCategory(e.target.value)} ></Input>
                 </div>
 

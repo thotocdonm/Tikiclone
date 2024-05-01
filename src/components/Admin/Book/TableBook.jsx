@@ -6,6 +6,7 @@ import moment from "moment";
 import InputSearchBook from './InputSearchBook';
 import DetailBook from './DetailBook';
 import ModalAddNewBook from './ModalAddNewBook';
+import ModalUpdateBook from './ModalUpdateBook';
 
 const TableBook = () => {
     const [listBook, setListBook] = useState([]);
@@ -14,10 +15,12 @@ const TableBook = () => {
     const [total, setTotal] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [searchFilter, setSearchFilter] = useState('');
-    const [sortFilter, setSortFilter] = useState('');
+    const [sortFilter, setSortFilter] = useState('sort=-updatedAt');
     const [open, setOpen] = useState(false);
     const [detailData, setDetailData] = useState({});
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+    const [dataUpdate, setDataUpdate] = useState({});
 
     const showDrawer = () => {
         setOpen(true);
@@ -97,6 +100,10 @@ const TableBook = () => {
                     </Popconfirm>
                     <EditOutlined
                         style={{ color: 'orange', cursor: 'pointer', fontSize: '20px', paddingLeft: '20px' }}
+                        onClick={() => {
+                            setIsUpdateModalOpen(true)
+                            setDataUpdate(record);
+                        }}
                     />
 
                 </>
@@ -154,7 +161,7 @@ const TableBook = () => {
 
     const handleSearch = (query) => {
         setSearchFilter(query)
-        fetchUserWithPaginate()
+        fetchBookWithPaginate();
     };
 
     useEffect(() => {
@@ -192,7 +199,16 @@ const TableBook = () => {
             <ModalAddNewBook
                 isAddModalOpen={isAddModalOpen}
                 setIsAddModalOpen={setIsAddModalOpen}
+                fetchBookWithPaginate={fetchBookWithPaginate}
             />
+            <ModalUpdateBook
+                isUpdateModalOpen={isUpdateModalOpen}
+                setIsUpdateModalOpen={setIsUpdateModalOpen}
+                fetchBookWithPaginate={fetchBookWithPaginate}
+                dataUpdate={dataUpdate}
+                setDataUpdate={setDataUpdate}
+            />
+
         </>
     )
 }

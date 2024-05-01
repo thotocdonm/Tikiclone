@@ -3,6 +3,7 @@ import { Button, Divider, Form, Image, Input, InputNumber, Modal, Select, Upload
 import { Col, Row } from 'antd';
 import { callUploadBookImg, getBookCategory, postCreateBook } from '../../../services/api';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import { v4 as uuidv4 } from 'uuid';
 
 const getBase64 = (img, callback) => {
     const reader = new FileReader();
@@ -18,8 +19,8 @@ const getPreviewBase64 = (file) =>
         reader.onerror = (error) => reject(error);
     });
 
-const ModalAddNewBook = (props) => {
-    const { isAddModalOpen, setIsAddModalOpen } = props;
+const ModalUpdateBook = (props) => {
+    const { isUpdateModalOpen, setIsUpdateModalOpen, dataUpdate, setDataUpdate } = props;
     const [category, setCategory] = useState([]);
     const [form] = Form.useForm();
     const [previewOpen, setPreviewOpen] = useState(false);
@@ -30,19 +31,26 @@ const ModalAddNewBook = (props) => {
     const [dataThumbnail, setDataThumbnail] = useState([]);
     const [dataSlider, setDataSlider] = useState([]);
     const [isSubmit, setIsSubmit] = useState(false);
+    const [initForm, setInitForm] = useState({});
+
     const showModal = () => {
-        setIsAddModalOpen(true);
+        setIsUpdateModalOpen(true);
     };
     const handleOk = () => {
         form.submit();
     };
     const handleCancel = () => {
-        setIsAddModalOpen(false);
+        setIsUpdateModalOpen(false);
+        setInitForm({});
+        setDataUpdate({});
         form.resetFields();
     };
     const onFinish = async (values) => {
-        console.log(values);
-
+        console.log('Success:', values);
+        console.log('check thumbnail', dataThumbnail);
+        console.log('check slider', dataSlider);
+        console.log('check data update', dataUpdate)
+        return;
         if (dataThumbnail.length === 0) {
             notification.error({
                 message: 'Đã có lỗi xảy ra',
@@ -62,7 +70,6 @@ const ModalAddNewBook = (props) => {
         const { mainText, author, price, sold, quantity, category } = values;
         const thumbnail = dataThumbnail[0].name;
         const slider = dataSlider.map(item => item.name);
-        setIsSubmit(true);
         let res = await postCreateBook(thumbnail, slider, mainText, author, price, sold, quantity, category);
         if (res && res.data) {
             message.success('Thêm mới sách thành công');
@@ -75,7 +82,6 @@ const ModalAddNewBook = (props) => {
                 duration: 5
             })
         }
-        setIsSubmit(false);
 
     };
     const onFinishFailed = (errorInfo) => {
@@ -83,6 +89,7 @@ const ModalAddNewBook = (props) => {
     };
     const onChange = (value) => {
         console.log(`selected ${value}`);
+        console.log(dataUpdate)
     };
     const filterOption = (input, option) =>
         (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
@@ -179,10 +186,56 @@ const ModalAddNewBook = (props) => {
 
     useEffect(() => {
         fetchBookCategory();
-    }, [])
+        if (dataUpdate?._id) {
+            const arrThumbnail = [
+                {
+                    uid: uuidv4(),
+                    name: dataUpdate.thumbnail,
+                    status: 'done',
+                    url: `${import.meta.env.VITE_BACKEND_URL}/images/book/${dataUpdate.thumbnail}`,
+                }
+            ]
+
+            const arrSlider = dataUpdate?.slider?.map(item => {
+                return {
+                    uid: uuidv4(),
+                    name: item,
+                    status: 'done',
+                    url: `${import.meta.env.VITE_BACKEND_URL}/images/book/${item}`,
+                }
+            })
+            const init = {
+                _id: dataUpdate._id,
+                mainText: dataUpdate.mainText,
+                author: dataUpdate.author,
+                price: dataUpdate.price,
+                sold: dataUpdate.sold,
+                quantity: dataUpdate.quantity,
+                category: dataUpdate.category,
+                thumbnail: { fileList: arrThumbnail },
+                slider: { fileList: arrSlider },
+            }
+            setInitForm(init);
+            setDataThumbnail(arrThumbnail);
+            setDataSlider(arrSlider);
+            form.setFieldsValue(init);
+        }
+        return () => {
+            form.resetFields();
+        }
+
+    }, [dataUpdate])
     return (
         <>
-            <Modal title="Thêm mới book" open={isAddModalOpen} onOk={handleOk} onCancel={handleCancel} width={'35vw'} confirmLoading={isSubmit} okText={'Thêm mới'} cancelText={'Hủy'} >
+            <Modal
+                title="Cập nhật book"
+                open={isUpdateModalOpen}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                width={'35vw'}
+                confirmLoading={isSubmit}
+                okText={'Cập nhật'}
+                cancelText={'Hủy'} >
                 <Divider />
                 <Form
                     name="basic"
@@ -334,6 +387,7 @@ const ModalAddNewBook = (props) => {
                                     customRequest={handleUploadFileThumbnail}
                                     beforeUpload={beforeUpload}
                                     onPreview={handlePreview}
+                                    defaultFileList={initForm?.thumbnail?.fileList ?? []}
                                     onChange={handleChange}
                                     onRemove={(file) => handleRemoveFile(file, 'thumbnail')}
                                 >
@@ -366,6 +420,7 @@ const ModalAddNewBook = (props) => {
                                     customRequest={handleUploadFileSlider}
                                     beforeUpload={beforeUpload}
                                     onPreview={handlePreview}
+                                    defaultFileList={initForm?.slider?.fileList ?? []}
                                     onChange={(info) => handleChange(info, 'slider')}
                                     onRemove={(file) => handleRemoveFile(file, 'slider')}
                                 >
@@ -398,4 +453,4 @@ const ModalAddNewBook = (props) => {
     )
 }
 
-export default ModalAddNewBook
+export default ModalUpdateBook
