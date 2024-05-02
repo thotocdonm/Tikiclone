@@ -62,3 +62,11 @@ export const callUploadBookImg = (fileImg) => {
 export const postCreateBook = (thumbnail, slider, mainText, author, price, sold, quantity, category) => {
     return axios.post('/api/v1/book', { thumbnail, slider, mainText, author, price, sold, quantity, category });
 }
+
+export const putUpdateBook = (_id, thumbnail, slider, mainText, author, price, sold, quantity, category) => {
+    return axios.put(`/api/v1/book/${_id}`, { thumbnail, slider, mainText, author, price, sold, quantity, category })
+}
+
+export const delDeleteBook = (_id) => {
+    return axios.delete(`/api/v1/book/${_id}`)
+}

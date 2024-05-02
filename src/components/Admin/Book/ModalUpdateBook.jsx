@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Divider, Form, Image, Input, InputNumber, Modal, Select, Upload, message, notification } from 'antd';
 import { Col, Row } from 'antd';
-import { callUploadBookImg, getBookCategory, postCreateBook } from '../../../services/api';
+import { callUploadBookImg, getBookCategory, postCreateBook, putUpdateBook } from '../../../services/api';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -46,11 +46,6 @@ const ModalUpdateBook = (props) => {
         form.resetFields();
     };
     const onFinish = async (values) => {
-        console.log('Success:', values);
-        console.log('check thumbnail', dataThumbnail);
-        console.log('check slider', dataSlider);
-        console.log('check data update', dataUpdate)
-        return;
         if (dataThumbnail.length === 0) {
             notification.error({
                 message: 'Đã có lỗi xảy ra',
@@ -67,12 +62,12 @@ const ModalUpdateBook = (props) => {
             })
             return;
         }
-        const { mainText, author, price, sold, quantity, category } = values;
+        const { _id, mainText, author, price, sold, quantity, category } = values;
         const thumbnail = dataThumbnail[0].name;
         const slider = dataSlider.map(item => item.name);
-        let res = await postCreateBook(thumbnail, slider, mainText, author, price, sold, quantity, category);
+        let res = await putUpdateBook(_id, thumbnail, slider, mainText, author, price, sold, quantity, category);
         if (res && res.data) {
-            message.success('Thêm mới sách thành công');
+            message.success('Cập nhật sách thành công');
             handleCancel();
             await props.fetchBookWithPaginate();
         } else {
@@ -246,6 +241,18 @@ const ModalUpdateBook = (props) => {
                     onFinish={onFinish}
                 >
                     <Row gutter={15}>
+                        <Col hidden>
+                            <Form.Item
+                                label="Tên sách"
+                                name="_id"
+                                hidden
+                                labelCol={{
+                                    span: 24
+                                }}
+                            >
+                                <Input />
+                            </Form.Item>
+                        </Col>
                         <Col span={12}>
                             <Form.Item
                                 label="Tên sách"
@@ -361,6 +368,7 @@ const ModalUpdateBook = (props) => {
                             >
                                 <InputNumber
                                     style={{ width: '100%' }}
+                                    disabled
                                 />
                             </Form.Item>
                         </Col>

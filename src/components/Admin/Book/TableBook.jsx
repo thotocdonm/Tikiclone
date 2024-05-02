@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Drawer, Popconfirm, Table } from 'antd';
-import { getBookWithPaginate } from '../../../services/api';
+import { Button, Drawer, Popconfirm, Table, message, notification } from 'antd';
+import { delDeleteBook, getBookWithPaginate } from '../../../services/api';
 import { DeleteOutlined, EditOutlined, ExportOutlined, ImportOutlined, PlusOutlined, SyncOutlined } from '@ant-design/icons';
 import moment from "moment";
 import InputSearchBook from './InputSearchBook';
 import DetailBook from './DetailBook';
 import ModalAddNewBook from './ModalAddNewBook';
 import ModalUpdateBook from './ModalUpdateBook';
+import * as XLSX from 'xlsx/xlsx.mjs';
 
 const TableBook = () => {
     const [listBook, setListBook] = useState([]);
@@ -95,6 +96,7 @@ const TableBook = () => {
                         okText="Xác nhận"
                         cancelText="Hủy"
                         placement="left"
+                        onConfirm={() => handleDeleteBook(record._id)}
                     >
                         <DeleteOutlined style={{ color: 'red', cursor: 'pointer', fontSize: '20px' }} />
                     </Popconfirm>
@@ -110,6 +112,22 @@ const TableBook = () => {
             }
         },
     ];
+
+    const handleDeleteBook = async (id) => {
+        let res = await delDeleteBook(id);
+        if (res && res.data) {
+            message.success('Xóa Book thành công');
+            fetchBookWithPaginate();
+        }
+        else {
+            notification.error({
+                message: 'Đã có lỗi xảy ra',
+                description: res?.message,
+                duration: 5
+            })
+        }
+    };
+
     const onChange = async (pagination, filters, sorter, extra) => {
         console.log('check sorter', sorter);
         if (pagination && pagination.current !== current) {
@@ -130,8 +148,7 @@ const TableBook = () => {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span>Table List Users</span>
                 <span style={{ display: 'flex', gap: 15 }}>
-                    <Button icon={<ExportOutlined />} type="primary" >Export</Button>
-                    <Button icon={<ImportOutlined />} type="primary" >Import</Button>
+                    <Button icon={<ExportOutlined />} type="primary" onClick={() => downloadExcel(listBook)} >Export</Button>
                     <Button icon={<PlusOutlined />} type="primary" onClick={() => setIsAddModalOpen(true)} >Thêm mới</Button>
                     <Button icon={<SyncOutlined />} type="ghost" onClick={() => {
                         setSortFilter('');
@@ -162,6 +179,15 @@ const TableBook = () => {
     const handleSearch = (query) => {
         setSearchFilter(query)
         fetchBookWithPaginate();
+    };
+
+    const downloadExcel = (data) => {
+        const worksheet = XLSX.utils.json_to_sheet(data);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+        //let buffer = XLSX.write(workbook, { bookType: "xlsx", type: "buffer" });
+        //XLSX.write(workbook, { bookType: "xlsx", type: "binary" });
+        XLSX.writeFile(workbook, "ExportUser.csv");
     };
 
     useEffect(() => {
