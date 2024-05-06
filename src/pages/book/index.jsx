@@ -1,4 +1,5 @@
 import { useLocation } from "react-router-dom"
+import ViewDetail from "./ViewDetail";
 
 
 const BookPage = () => {
@@ -9,7 +10,7 @@ const BookPage = () => {
     console.log('check book id: ', id)
     return (
         <>
-            Book Page
+            <ViewDetail />
         </>
     )
 }
