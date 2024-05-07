@@ -56,7 +56,7 @@ const Header = () => {
         <>
             <div className="header-container">
                 <div className="title">
-                    <div className="title-logo">
+                    <div className="title-logo" style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
                         <FaReact size={35} className="icon" />
                         React Project
                     </div>

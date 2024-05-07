@@ -70,3 +70,7 @@ export const putUpdateBook = (_id, thumbnail, slider, mainText, author, price, s
 export const delDeleteBook = (_id) => {
     return axios.delete(`/api/v1/book/${_id}`)
 }
+
+export const getDetailBookById = (id) => {
+    return axios.get(`/api/v1/book/${id}`)
+}

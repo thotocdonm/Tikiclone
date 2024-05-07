@@ -19,7 +19,6 @@ const ModalGallery = (props) => {
                         <ImageGallery
                             ref={refGallery}
                             items={images}
-                            onClick={showModal}
                             infinite={true}
                             additionalClass="images"
                             showBullets={false}
@@ -28,6 +27,7 @@ const ModalGallery = (props) => {
                             showPlayButton={false}
                             disableThumbnailScroll={true}
                             showThumbnails={false}
+                            startIndex={currentIndex}
                         />
                     </div>
                 </Col>
