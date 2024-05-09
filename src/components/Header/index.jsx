@@ -3,13 +3,14 @@ import { FaReact } from "react-icons/fa";
 import { LuShoppingCart } from "react-icons/lu";
 import './header.scss'
 import { useState } from "react";
-import { Badge, Divider, Drawer, Dropdown, Space, message } from "antd";
+import { Badge, Divider, Drawer, Dropdown, Popover, Space, message } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineMenu } from "react-icons/ai";
 import { callLogout } from "../../services/api";
 import { doLogoutAction } from "../../redux/account/accountSlice";
+import '../../styles/global.scss'
 const Header = () => {
 
     const navigate = useNavigate();
@@ -35,6 +36,28 @@ const Header = () => {
 
     const isAuthenticated = useSelector(state => state.account.isAuthenticated)
     const user = useSelector(state => state.account.user);
+    const cartQuantity = useSelector(state => state.order.cart.length);
+    const contentCart = useSelector(state => state.order.cart);
+    const contentPopover = (
+        <div>
+            {contentCart && contentCart.length > 0 && contentCart.map((item) => {
+                return (
+                    <div className="items-container">
+                        <img src={`${import.meta.env.VITE_BACKEND_URL}/images/book/${item.detail.thumbnail}`} width={'60px'} height={'60px'} className="items" />
+                        <div className="items">
+                            {item.detail.mainText}
+                        </div>
+                        <div className="items price">
+                            {Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.detail.price)}
+                        </div>
+                    </div>
+                )
+            })}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '10px' }}>
+                <button type="button" className="btn checkCartBtn" onClick={() => navigate('/order')}>Xem giỏ hàng</button>
+            </div>
+        </div>
+    );
 
     if (user?.role === 'ADMIN') {
         items.unshift({
@@ -51,7 +74,6 @@ const Header = () => {
             navigate('/')
         }
     }
-
     return (
         <>
             <div className="header-container">
@@ -71,9 +93,12 @@ const Header = () => {
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <Badge count={5} size="small">
-                        <LuShoppingCart size={30} style={{ color: '#1677ff' }} />
-                    </Badge>
+                    <Popover placement="bottomRight" title="Sản phẩm mới thêm" className="popover-carts" rootClassName="popover-carts" content={contentPopover} >
+                        <Badge count={cartQuantity} size="small">
+                            <LuShoppingCart size={30} style={{ color: '#1677ff' }} />
+                        </Badge>
+                    </Popover>
+
 
                 </div>
 

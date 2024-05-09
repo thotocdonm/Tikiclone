@@ -1,7 +1,7 @@
 import "react-image-gallery/styles/scss/image-gallery.scss";
 import ImageGallery from "react-image-gallery";
 import "./ViewDetail.scss"
-import { Rate } from "antd";
+import { Rate, message } from "antd";
 import { useEffect, useState } from "react";
 import Modal from "antd/es/modal/Modal";
 import ModalGallery from "./ModalGallery";

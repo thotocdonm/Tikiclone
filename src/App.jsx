@@ -24,6 +24,7 @@ import OrderPage from './pages/order/index.jsx';
 import TableUser from './components/Admin/User/TableUser.jsx';
 import InputSearch from './components/Admin/User/InputSearch.jsx';
 import TableBook from './components/Admin/Book/TableBook.jsx';
+import './styles/global.scss'
 
 const Layout = () => {
   return (
@@ -72,6 +73,12 @@ export default function App() {
           path: "book/:slug",
           element: <BookPage />,
         },
+        {
+          path: "order",
+          element:
+            <OrderPage />
+          ,
+        },
       ],
     },
 
@@ -106,13 +113,6 @@ export default function App() {
           path: "book",
           element: <ProtectedRoute>
             <TableBook />
-          </ProtectedRoute>
-          ,
-        },
-        {
-          path: "order",
-          element: <ProtectedRoute>
-            <OrderPage />
           </ProtectedRoute>
           ,
         },
