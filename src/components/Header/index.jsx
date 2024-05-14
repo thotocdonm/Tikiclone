@@ -21,6 +21,10 @@ const Header = () => {
             key: 'account',
         },
         {
+            label: <label style={{ cursor: 'pointer' }} onClick={() => navigate('/history')}>Lịch sử mua hàng</label>,
+            key: 'history',
+        },
+        {
             label: <label style={{ cursor: 'pointer' }} onClick={() => handleLogout()}>Đăng xuất</label>,
             key: 'logout',
         },

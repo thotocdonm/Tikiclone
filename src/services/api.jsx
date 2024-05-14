@@ -74,3 +74,11 @@ export const delDeleteBook = (_id) => {
 export const getDetailBookById = (id) => {
     return axios.get(`/api/v1/book/${id}`)
 }
+
+export const postCreateOrder = (data) => {
+    return axios.post('/api/v1/order', data)
+}
+
+export const getHistory = () => {
+    return axios.get(`/api/v1/history`)
+}

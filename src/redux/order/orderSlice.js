@@ -56,7 +56,12 @@ export const orderSlice = createSlice({
             let newCarts = carts.filter(c => c._id !== item._id);
             state.cart = newCarts;
             message.success('Xóa sản phẩm khỏi giỏ hàng thành công')
+        },
+
+        doPlaceOrderAction: (state, action) => {
+            state.cart = [];
         }
+
     },
 
     // The `extraReducers` field lets the slice handle actions defined elsewhere,
@@ -66,6 +71,6 @@ export const orderSlice = createSlice({
     },
 });
 
-export const { doAddBookAction, onChangeQuantityAction, doDeleteBookAction } = orderSlice.actions;
+export const { doAddBookAction, onChangeQuantityAction, doDeleteBookAction, doPlaceOrderAction } = orderSlice.actions;
 
 export default orderSlice.reducer;

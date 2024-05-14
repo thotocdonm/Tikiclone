@@ -1,6 +1,13 @@
 .order-container {
     padding: 15px 20px;
 
+    .steps{
+        background-color: white;
+        margin: 15px 0;
+        padding: 15px 15px;
+        border-radius: 15px;
+    }
+
     .order-left {
         background-color: white;
         border-radius   : 15px;
@@ -8,29 +15,28 @@
         display         : flex;
         padding         : 15px 0;
         align-items     : center;
-        gap: 10px;
-        justify-content: space-between;
+        gap             : 10px;
+        justify-content : space-between;
 
-        .mainText{
-            height: 100%;
-            width: 500px;
+        .mainText {
+            height         : 100%;
+            width          : 500px;
             justify-content: center;
-            flex-wrap: wrap;
-            display: flex;
-            padding: 15px 0;
+            flex-wrap      : wrap;
+            display        : flex;
+            padding        : 15px 0;
         }
-        .book-price{
 
+    }
 
-        }
-        .book-quantity{
-
-
-        }
-        .book-totalPrice{
-
-
-        }
+    .empty {
+        background-color: white;
+        display         : flex;
+        justify-content : center;
+        height          : 50vh;
+        border-radius   : 15px;
+        margin          : 15px 0;
+        align-items     : center;
     }
 
     .order-right {
@@ -78,9 +84,9 @@
             outline   : 0;
             overflow  : visible;
             position  : relative;
-            width: 100%;
-            height : 48px;
-            padding: 0 20px;
+            width     : 100%;
+            height    : 48px;
+            padding   : 0 20px;
 
             &:hover {
                 background: #f05d40;

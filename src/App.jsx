@@ -25,6 +25,7 @@ import TableUser from './components/Admin/User/TableUser.jsx';
 import InputSearch from './components/Admin/User/InputSearch.jsx';
 import TableBook from './components/Admin/Book/TableBook.jsx';
 import './styles/global.scss'
+import History from './pages/history/index.jsx';
 
 const Layout = () => {
   return (
@@ -77,6 +78,12 @@ export default function App() {
           path: "order",
           element:
             <OrderPage />
+          ,
+        },
+        {
+          path: "history",
+          element:
+            <History />
           ,
         },
       ],
