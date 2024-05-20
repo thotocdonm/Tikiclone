@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 import Loading from "../Loading";
-import NotPermitted from "./notPermitted";
+import NotPermitted from './NotPermitted.jsx'
 
 const RoleBaseRoute = (props) => {
     const isAdminRoute = window.location.pathname.startsWith('/admin');
