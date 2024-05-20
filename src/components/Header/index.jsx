@@ -86,7 +86,7 @@ const Header = (props) => {
         if (res && res?.data) {
             dispatch(doLogoutAction());
             message.success('Đăng xuất thành công');
-            navigate('/')
+            navigate('/login')
         }
     }
 
