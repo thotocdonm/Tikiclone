@@ -1,6 +1,6 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Dropdown, Layout, Menu, Space, message, theme } from "antd";
 import Sider from "antd/es/layout/Sider";
 import { AppstoreOutlined, DollarCircleOutlined, DownOutlined, ExceptionOutlined, HeartTwoTone, MenuFoldOutlined, MenuUnfoldOutlined, TeamOutlined, UploadOutlined, UserOutlined, VideoCameraOutlined } from "@ant-design/icons";
@@ -20,7 +20,7 @@ const items = [
     },
     {
         label: <span>Manage Users</span>,
-        // key: 'user',
+        key: 'user',
         icon: <UserOutlined />,
         children: [
             {
@@ -28,11 +28,6 @@ const items = [
                 key: 'crud',
                 icon: <TeamOutlined />,
             },
-            {
-                label: 'Files1',
-                key: 'file1',
-                icon: <TeamOutlined />,
-            }
         ]
     },
     {
@@ -74,10 +69,6 @@ const LayoutAdmin = () => {
 
     const itemsDropdown = [
         {
-            label: <label style={{ cursor: 'pointer' }}>Quản lý tài khoản</label>,
-            key: 'account',
-        },
-        {
             label: <label style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>Trang chủ</label>,
             key: 'home',
         },
@@ -91,6 +82,17 @@ const LayoutAdmin = () => {
 
     ];
 
+    useEffect(() => {
+        if (window.location.pathname.includes('/book')) {
+            setActiveMenu('book')
+        }
+        if (window.location.pathname.includes('/order')) {
+            setActiveMenu('order')
+        }
+        if (window.location.pathname.includes('/user')) {
+            setActiveMenu('user')
+        }
+    }, [])
 
     return (
         <div className='layout-app'>
@@ -107,7 +109,7 @@ const LayoutAdmin = () => {
                         Admin
                     </div>
                     <Menu
-                        defaultSelectedKeys={[activeMenu]}
+                        selectedKeys={[activeMenu]}
                         mode="inline"
                         items={items}
                         onClick={(e) => setActiveMenu(e.key)}

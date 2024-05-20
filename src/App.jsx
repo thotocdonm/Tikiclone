@@ -26,12 +26,14 @@ import InputSearch from './components/Admin/User/InputSearch.jsx';
 import TableBook from './components/Admin/Book/TableBook.jsx';
 import './styles/global.scss'
 import History from './pages/history/index.jsx';
+import TableOrder from './components/Admin/Order/TableOrder.jsx';
 
 const Layout = () => {
+  const [searchTerm, setSearchTerm] = useState('');
   return (
     <div className='layout-app'>
-      <Header />
-      <Outlet />
+      <Header searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+      <Outlet context={[searchTerm, setSearchTerm]} />
       <Footer />
     </div>
   )
@@ -43,6 +45,7 @@ export default function App() {
   const dispatch = useDispatch();
   const isAuthenticated = useSelector(state => state.account.isAuthenticated);
   const isLoading = useSelector(state => state.account.isLoading);
+  const user = useSelector(state => state.account.user);
 
   const getAccount = async () => {
     if (window.location.pathname === '/login'
@@ -77,13 +80,19 @@ export default function App() {
         {
           path: "order",
           element:
-            <OrderPage />
+            <ProtectedRoute>
+              <OrderPage />
+            </ProtectedRoute>
+
           ,
         },
         {
           path: "history",
           element:
-            <History />
+            <ProtectedRoute>
+              <History />
+            </ProtectedRoute>
+
           ,
         },
       ],
@@ -120,6 +129,13 @@ export default function App() {
           path: "book",
           element: <ProtectedRoute>
             <TableBook />
+          </ProtectedRoute>
+          ,
+        },
+        {
+          path: "order",
+          element: <ProtectedRoute>
+            <TableOrder />
           </ProtectedRoute>
           ,
         },

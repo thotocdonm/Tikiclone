@@ -1,13 +1,14 @@
-import { Col, Divider, InputNumber, Pagination, Rate, Row, Spin } from "antd"
+import { Col, Divider, Drawer, InputNumber, Pagination, Rate, Row, Spin } from "antd"
 import React, { useEffect, useState } from 'react';
 import { Button, Checkbox, Form, Input } from 'antd';
 import { FilterOutlined, SyncOutlined } from "@ant-design/icons";
 import './home.scss'
 import { Tabs } from 'antd';
 import { getBookCategory, getBookWithPaginate } from "../../services/api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 const Home = () => {
+    const [searchTerm, setSearchTerm] = useOutletContext();
     const [category, setCategory] = useState([]);
     const [listBook, setListBook] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -20,6 +21,11 @@ const Home = () => {
     const navigate = useNavigate();
 
     const [form] = Form.useForm();
+
+    const [openSortDrawer, setOpenSortDrawer] = useState(false);
+    const onCloseSortDrawer = () => {
+        setOpenSortDrawer(false)
+    }
 
     const onChange = (page, pageSize) => {
         if (page !== currentPage) {
@@ -82,6 +88,9 @@ const Home = () => {
         if (rangeFilter) {
             query += `&${rangeFilter}`
         }
+        if (searchTerm) {
+            query += `&mainText=/${searchTerm}/i`;
+        }
         setIsLoading(true);
         const res = await getBookWithPaginate(query);
         if (res && res.data) {
@@ -97,7 +106,7 @@ const Home = () => {
     useEffect(() => {
         fetchBookCategory();
         fetchBook();
-    }, [currentPage, currentPageSize, sortQuery, categoryFilter, rangeFilter])
+    }, [currentPage, currentPageSize, sortQuery, categoryFilter, rangeFilter, searchTerm])
 
     const items = [
         {
@@ -157,7 +166,7 @@ const Home = () => {
     return (
         <div className="home-container" style={{ maxWidth: 1920, margin: '0 auto' }}>
             <Row gutter={[20, 20]} style={{ display: 'flex', gap: '35px', paddingTop: '20px' }}>
-                <Col xs={0} sm={0} md={4} style={{ borderRadius: '10px', background: 'white' }}>
+                <Col xs={0} sm={0} md={4} style={{ borderRadius: '10px', background: 'white', marginLeft: '30px' }}>
                     <div>
                         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: '10px 10px' }}>
                             <span style={{ fontWeight: 'bold', fontSize: '15px' }}><FilterOutlined style={{ fontSize: '20px', color: 'rgb(22, 119, 255)' }} /> Bộ lọc tìm kiếm</span>
@@ -168,6 +177,7 @@ const Home = () => {
                                     form.resetFields()
                                     setCategoryFilter('')
                                     setRangeFilter('')
+                                    setSearchTerm('')
                                 }}
 
                             ></Button>
@@ -278,6 +288,9 @@ const Home = () => {
                         <Row>
                             <Tabs defaultActiveKey="1" items={items} onChange={onChangeTabs} />
                         </Row>
+                        <Row className="phone-sorter">
+                            <span onClick={() => setOpenSortDrawer(true)} style={{ fontWeight: 'bold', fontSize: '15px' }}><FilterOutlined style={{ fontSize: '20px', color: 'rgb(22, 119, 255)' }} />Lọc</span>
+                        </Row>
 
                         <Row className="customize-row">
                             {listBook && listBook.length > 0 && listBook.map(item => {
@@ -312,6 +325,112 @@ const Home = () => {
                 </Col>
 
             </Row>
+            <Drawer
+                title="Bộ lọc"
+                placement={'right'}
+                onClose={onCloseSortDrawer}
+                open={openSortDrawer}
+            >
+                <div>
+                    <Form
+                        name="basic"
+                        form={form}
+                        onFinish={onFinish}
+                        onValuesChange={handleChangeFilter}
+                    >
+                        <Form.Item
+                            name="category"
+                            label="Danh mục sản phẩm"
+                            labelCol={{ span: 24 }}
+                            style={{ padding: '0 10px' }}
+                        >
+                            <Checkbox.Group
+                                style={{
+                                    width: '100%',
+                                }}
+
+                            >
+                                <Row>
+                                    {category && category.length > 0 && category.map(item => {
+                                        return (
+                                            <Col span={24} style={{ padding: '5px 0' }}>
+                                                <Checkbox value={item}>{item}</Checkbox>
+                                            </Col>
+                                        )
+                                    })}
+                                </Row>
+                            </Checkbox.Group>
+
+                        </Form.Item>
+                        <Divider />
+                        <Form.Item
+                            label='Khoảng giá'
+                            labelCol={{ span: 24 }}
+                            style={{ padding: '0 10px' }}
+                        >
+                            <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+                                <Form.Item name={["range", 'from']}>
+                                    <InputNumber
+
+                                        width={'100%'}
+                                        placeholder="Từ đ"
+                                        formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                        parser={(value) => value?.replace(/\$\s?|(,*)/g, '')}
+                                    />
+                                </Form.Item>
+
+                                <span> - </span>
+                                <Form.Item name={["range", 'to']}>
+                                    <InputNumber
+
+                                        width={'100%'}
+                                        placeholder="Đến đ"
+                                        formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                                        parser={(value) => value?.replace(/\$\s?|(,*)/g, '')}
+                                    />
+                                </Form.Item>
+
+                            </div>
+
+                        </Form.Item>
+
+                        <Form.Item
+                            style={{ padding: '0 10px' }}
+                        >
+                            <Button type="primary" onClick={() => form.submit()} block>
+                                Áp dụng
+                            </Button>
+                        </Form.Item>
+                        <Form.Item
+
+                            label="Đánh giá"
+                            labelCol={{ span: 24 }}
+                            style={{ padding: '0 10px' }}
+                        >
+                            <div>
+                                <Rate value={5} disabled style={{ color: '#ffce3d', fontSize: 15 }} />
+                                <span className="ant-rate-text"></span>
+                            </div>
+                            <div>
+                                <Rate value={4} disabled style={{ color: '#ffce3d', fontSize: 15 }} />
+                                <span className="ant-rate-text">trở lên</span>
+                            </div>
+                            <div>
+                                <Rate value={3} disabled style={{ color: '#ffce3d', fontSize: 15 }} />
+                                <span className="ant-rate-text">trở lên</span>
+                            </div>
+                            <div>
+                                <Rate value={2} disabled style={{ color: '#ffce3d', fontSize: 15 }} />
+                                <span className="ant-rate-text">trở lên</span>
+                            </div>
+                            <div>
+                                <Rate value={1} disabled style={{ color: '#ffce3d', fontSize: 15 }} />
+                                <span className="ant-rate-text">trở lên</span>
+                            </div>
+                        </Form.Item>
+                    </Form>
+                </div>
+            </Drawer>
         </div>
     )
 }

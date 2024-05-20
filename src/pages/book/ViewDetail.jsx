@@ -9,6 +9,7 @@ import { useRef } from "react";
 import { MinusOutlined, PlusOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { doAddBookAction } from "../../redux/order/orderSlice";
+import { useNavigate } from "react-router-dom";
 const ViewDetail = (props) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const refGallery = useRef(null);
@@ -16,6 +17,7 @@ const ViewDetail = (props) => {
     const { dataBook } = props;
     const [imageArr, setImageArr] = useState([]);
     const [currentQuantity, setCurrentQuantity] = useState(1);
+    const navigate = useNavigate();
 
     const dispatch = useDispatch();
 
@@ -139,7 +141,13 @@ const ViewDetail = (props) => {
 
                             <span> <ShoppingCartOutlined style={{ fontSize: '17px', marginRight: '5px' }} />Thêm vào giỏ hàng</span>
                         </button>
-                        <button type="button" className="btn buy-btn"> Mua ngay</button>
+                        <button type="button" className="btn buy-btn"
+                            onClick={() => {
+                                handleAddToCart(currentQuantity, dataBook)
+                                navigate('/order')
+                            }
+
+                            }> Mua ngay</button>
                     </div>
                 </div>
             </div>

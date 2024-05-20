@@ -82,3 +82,33 @@ export const postCreateOrder = (data) => {
 export const getHistory = () => {
     return axios.get(`/api/v1/history`)
 }
+
+export const postUploadAvatar = (fileImg) => {
+    const bodyFormData = new FormData();
+    bodyFormData.append('fileImg', fileImg);
+    return axios({
+        method: 'post',
+        url: '/api/v1/file/upload',
+        data: bodyFormData,
+        headers: {
+            "Content-Type": "multipart/form-data",
+            "upload-type": "avatar"
+        },
+    });
+}
+
+export const putUpdateInfo = (fullName, phone, avatar, _id) => {
+    return axios.put('/api/v1/user', { fullName, phone, avatar, _id })
+}
+
+export const postChangePassword = (email, oldpass, newpass) => {
+    return axios.post('/api/v1/user/change-password', { email, oldpass, newpass })
+}
+
+export const getOrderWithPaginate = (query) => {
+    return axios.get(`/api/v1/order?${query}`)
+}
+
+export const getDashBoard = () => {
+    return axios.get(`/api/v1/database/dashboard`)
+}
