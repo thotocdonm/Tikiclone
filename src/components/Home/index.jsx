@@ -298,7 +298,7 @@ const Home = () => {
                                     <div className="column" onClick={() => handleRedirectBook(item)}>
                                         <div className="wrapper">
                                             <div className="thumbnail">
-                                                <img src={`http://localhost:8080/images/book/${item.thumbnail}`}></img>
+                                                <img src={`${import.meta.env.VITE_BACKEND_URL}/images/book/${item.thumbnail}`}></img>
                                             </div>
                                             <div className="text">
                                                 {item.mainText}

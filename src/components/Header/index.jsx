@@ -52,7 +52,7 @@ const Header = (props) => {
     const cartQuantity = useSelector(state => state.order.cart.length);
     const contentCart = useSelector(state => state.order.cart);
     const [userAvatar, setUserAvatar] = useState(user?.avatar ?? "");
-    const srcAvatar = `http://localhost:8080/images/avatar/${userAvatar}`;
+    const srcAvatar = `${import.meta.env.VITE_BACKEND_URL}/images/avatar/${userAvatar}`;
     const contentPopover = (
         <div>
             {contentCart && contentCart.length > 0 && contentCart.map((item) => {
@@ -364,7 +364,7 @@ const Header = (props) => {
                         <a onClick={(e) => e.preventDefault()}>
                             <Space size={10}>
                                 <div className="header-right">
-                                    <Avatar size={45} icon={<UserOutlined />} src={`http://localhost:8080/images/avatar/${user.avatar}`} />
+                                    <Avatar size={45} icon={<UserOutlined />} src={`${import.meta.env.VITE_BACKEND_URL}/images/avatar/${user.avatar}`} />
                                     {user.fullName}
                                 </div>
                                 <DownOutlined />

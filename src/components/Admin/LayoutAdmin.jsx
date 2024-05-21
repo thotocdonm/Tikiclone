@@ -127,7 +127,7 @@ const LayoutAdmin = () => {
                             <a onClick={(e) => e.preventDefault()}>
                                 <Space>
                                     <div className="header-right">
-                                        <img src={`http://localhost:8080/images/avatar/${user.avatar}`} width={'30px'} height={'30px'}></img>
+                                        <img src={`${import.meta.env.VITE_BACKEND_URL}/images/avatar/${user.avatar}`} width={'30px'} height={'30px'}></img>
                                         {user.fullName}
                                     </div>
                                     <DownOutlined />
