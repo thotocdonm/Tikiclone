@@ -134,8 +134,8 @@ const TableUser = () => {
     };
 
     const handleSearch = (query) => {
+        setCurrent(1);
         setSearchFilter(query)
-        fetchUserWithPaginate()
     };
 
     const renderHeader = () => {

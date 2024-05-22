@@ -1,4 +1,7 @@
 import axios from "axios";
+import { Mutex } from "async-mutex";
+
+const mutex = new Mutex();
 
 const baseURL = import.meta.env.VITE_BACKEND_URL;
 
@@ -11,9 +14,15 @@ const instance = axios.create({
 instance.defaults.headers.common = { 'Authorization': `Bearer ${localStorage.getItem('access_token')}` }
 
 const handleRefreshToken = async () => {
-    const res = await instance.get('/api/v1/auth/refresh')
-    if (res && res.data) return res.data.access_token;
-    else null;
+    // const res = await instance.get('/api/v1/auth/refresh')
+    // if (res && res.data) return res.data.access_token;
+    // else null;
+
+    return await mutex.runExclusive(async () => {
+        const res = await instance.get('/api/v1/auth/refresh');
+        if (res && res.data) return res.data.access_token;
+        else return null;
+    })
 }
 const NO_RETRY_HEADER = 'x-no-retry'
 
@@ -21,6 +30,10 @@ const NO_RETRY_HEADER = 'x-no-retry'
 // Add a request interceptor
 instance.interceptors.request.use(function (config) {
     // Do something before request is sent
+    if (typeof window !== "undefined" && window && window.localStorage &&
+        window.localStorage.getItem('access_token')) {
+        config.headers.Authorization = 'Bearer ' + window.localStorage.getItem('access_token');
+    }
     return config;
 }, function (error) {
     // Do something with request error

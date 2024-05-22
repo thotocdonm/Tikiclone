@@ -382,7 +382,10 @@ const Header = (props) => {
                 onClose={onClose}
                 open={open}
             >
-                <p onClick={() => navigate('/')}>Trang chủ</p>
+                <p onClick={() => {
+                    navigate('/')
+                    onClose();
+                }}>Trang chủ</p>
                 <p onClick={() => handleLogout()}>Đăng xuất</p>
             </Drawer>
             <Modal title="Quản lý tài khoản" width={'50vw'} footer={false} open={isUpdateUserModalOpen} onOk={handleOk} onCancel={handleCancel}>

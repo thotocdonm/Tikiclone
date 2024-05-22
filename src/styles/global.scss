@@ -1,8 +1,6 @@
-html{
-    overflow-y: hidden;
-    overflow-x: hidden;
+::-webkit-scrollbar {
+    display: none;
 }
-
 .popover-carts {
     .items-container {
         display    : flex;
