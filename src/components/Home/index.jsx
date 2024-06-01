@@ -330,6 +330,7 @@ const Home = () => {
                 placement={'right'}
                 onClose={onCloseSortDrawer}
                 open={openSortDrawer}
+                width={'75vw'}
             >
                 <div>
                     <Form

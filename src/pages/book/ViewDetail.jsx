@@ -138,7 +138,6 @@ const ViewDetail = (props) => {
                     </div>
                     <div className="buy-group">
                         <button onClick={() => handleAddToCart(currentQuantity, dataBook)} type="button" className="btn add-btn" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-
                             <span> <ShoppingCartOutlined style={{ fontSize: '17px', marginRight: '5px' }} />Thêm vào giỏ hàng</span>
                         </button>
                         <button type="button" className="btn buy-btn"
