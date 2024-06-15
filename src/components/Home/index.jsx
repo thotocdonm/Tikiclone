@@ -325,6 +325,7 @@ const Home = () => {
                 </Col>
 
             </Row>
+            {/* drawer for mobile */}
             <Drawer
                 title="Bộ lọc"
                 placement={'right'}

@@ -91,8 +91,8 @@ const TableBook = () => {
             render: (record) => {
                 return <>
                     <Popconfirm
-                        title="Xác nhận xóa User"
-                        description="Bạn có chắc chắn muốn xóa user này ?"
+                        title="Xác nhận xóa Book"
+                        description="Bạn có chắc chắn muốn xóa book này ?"
                         okText="Xác nhận"
                         cancelText="Hủy"
                         placement="left"
